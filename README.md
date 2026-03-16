@@ -1,23 +1,39 @@
 # mini-ocr
 
-Mini OCR is a compact CRNN-based project for recognizing short numeric text from grayscale images.
+Mini OCR is a lightweight, production-friendly OCR framework built on CRNN + CTC.
+
+`print_digital` is only the default demo task in this repository.  
+The core pipeline is generic and can be extended to many OCR scenarios with minimal code changes.
 
 ## What Problem This Project Solves
 
-This project is designed for OCR tasks where labels are embedded in filenames and the target text is mainly numbers and number-like strings (for example `771.99.26`, `-6`, or `12,345.67`).
+This project gives you a simple end-to-end OCR training and inference stack:
 
 It helps you:
 
-- generate synthetic OCR datasets quickly,
-- train a lightweight OCR model with CTC loss,
-- run fast PyTorch inference from `.pt` checkpoints.
+- build labeled OCR datasets quickly (including pseudo data generation),
+- train a compact model with stable CTC optimization,
+- deploy fast PyTorch inference from `.pt` checkpoints,
+- continue training from base models for domain adaptation.
 
 ## Typical Application Scenarios
 
-- printed numeric strings on receipts and forms,
-- industrial meters and machine panels,
-- serial/batch number extraction,
-- financial number snapshots in controlled layouts.
+- printed text OCR,
+- handwritten OCR,
+- meter/panel and instrument reading OCR,
+- invoice/receipt key field OCR,
+- serial number and code OCR,
+- custom vertical-domain OCR with your own alphabet.
+
+## Adapt to Any OCR Task
+
+You can adapt this project from `print_digital` to your own OCR use case by:
+
+- replacing training/validation/test images with your own samples,
+- replacing `DATASETS.CHAR_DICT` with your own dictionary file,
+- implementing your own dataset parsing logic in `MiniOcrDatabase` when filename labeling is not enough.
+
+The model/training/inference code can stay the same in most cases.
 
 ## Post-Training and Extension Support
 
@@ -30,6 +46,12 @@ The project supports continued training (fine-tuning) from a base checkpoint and
 - tune augmentation in `ocr/utils/enhance.py`.
 
 ## Installation
+
+Python requirement:
+
+```text
+Python >= 3.10
+```
 
 ```bash
 pip install -r requirements.txt
@@ -100,7 +122,10 @@ python train.py --cfg_file ./config/config_print_digital.yaml SOLVER.EPOCHS 100 
 
 ## 3) Validate / Run Inference
 
-If you upload `print_digital_base.pt` to the server (for example under `./data/models/print_digital_base.pt`), run:
+test_4,8383.jpg： ![test sample 1](data/images/test/test_4,8383.jpg)
+test_771.99.26.jpg： ![test sample 2](data/images/test/test_771.99.26.jpg)
+
+run:
 
 ```bash
 python predict.py \
@@ -116,6 +141,13 @@ Output format:
 
 ```text
 <file_name>\t<predicted_text>\t<latency_ms>
+
+2026-03-15 22:59:21,142 - INFO - Using device: cuda
+2026-03-15 22:59:21,143 - INFO - Model: data/models/print_digital_base.pt
+2026-03-15 22:59:21,143 - INFO - Images found: 2
+2026-03-15 22:59:21,356 - INFO - CUDA warmup finished: 10 iterations (batch=2)
+test_771.99.26.jpg       771.99.26       0.262 ms
+test_4,8383.jpg          4,8383          0.262 ms
 ```
 
 ## 4) Continue Training from a Base Model
