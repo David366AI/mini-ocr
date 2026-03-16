@@ -123,6 +123,7 @@ python train.py --cfg_file ./config/config_print_digital.yaml SOLVER.EPOCHS 100 
 ## 3) Validate / Run Inference
 
 test_4,8383.jpg： ![test sample 1](data/images/test/test_4,8383.jpg)
+
 test_771.99.26.jpg： ![test sample 2](data/images/test/test_771.99.26.jpg)
 
 run:
