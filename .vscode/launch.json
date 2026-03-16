@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Train Mini OCR (1 Epoch)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/train.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--cfg_file",
+        "./config/config_print_digital.yaml",
+        "SOLVER.EPOCHS",
+        "1"
+      ]
+    }
+  ]
+}
